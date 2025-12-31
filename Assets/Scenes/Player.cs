@@ -2,12 +2,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float horizontalInput = 0, verticalInput = 0;
-    Rigidbody2D rb;
-    public float speed = 1000.0f;
-    public float jumpForce = 5f;
+    public Vector2 speed = new Vector2(10, 10);
+    private Vector2 movement = new Vector2(1, 1);
+    private Rigidbody2D rb;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -16,19 +15,31 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
-        Vector3 movement = new Vector3(horizontalInput, 0.0f, verticalInput);
+        float inputX = Input.GetAxis("Horizontal");
+        float inputY = Input.GetAxis("Vertical");
+
+        Vector3 movement = new Vector3(inputX, 0.0f, inputY);
+
         if (movement.magnitude > 1)
         {
             movement.Normalize();
         }
-        if (Input.GetButtonDown("Jump"))
+
+        transform.Translate(movement * speed * Time.deltaTime);
+
+        movement = new Vector2(
+            speed.x * inputX,
+            speed.y * inputY);
+
+        if (Input.GetKeyDown("space"))
         {
-            // Add an upward force
-            rb.AddForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * 15, ForceMode2D.Impulse);
+        }
+        if (Input.GetKeyDown("s"))
+        {
+            rb.AddForce(Vector2.down * 15, ForceMode2D.Impulse);
         }
 
-        rb.MovePosition(rb.transform.position + movement * speed;
+
     }
 }
